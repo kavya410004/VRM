@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllAvailableVehicles, getAllUnavailableVehicles, getAllAvailableDrivers, getAllUnavailableDrivers, getVehicleBookings, getAllAvailableDriversInOrder, getAllVehicleBookings, getAllDriverHirings, getDriverHirings, getActiveAndPrevious, addVehicle, addDriver , setVehicleAvalibilityFalse, setVehicleAvalibilityTrue, setDriverAvalibilityFalse, setDriverAvalibilityTrue, bookVehicle, hireDriver } from "./controller.js";
+import { createTables, getAllAvailableVehicles, getAllUnavailableVehicles, getAllAvailableDrivers, getAllUnavailableDrivers, getVehicleBookings, getAllAvailableDriversInOrder, getAllVehicleBookings, getAllDriverHirings, getDriverHirings, getActiveAndPrevious, addVehicle, addDriver , setVehicleAvalibilityFalse, setVehicleAvalibilityTrue, setDriverAvalibilityFalse, setDriverAvalibilityTrue, bookVehicle, hireDriver } from "./controller.js";
 import passport from "passport";
 import db from "./database.js";
 import upload from "./util.js";
@@ -10,10 +10,13 @@ import env from "dotenv";
 env.config();
 
 const router = express.Router();
-
+var r = 0;
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 router.get("/",async (req,res)=>{
+  if(r == 0){
+    createTables();
+  }
   let isLoggedIn = (req.isAuthenticated() && req.user.type === 'user')? true: false;
   try{
     let featuredVehiclesList = await getAllAvailableVehicles();
