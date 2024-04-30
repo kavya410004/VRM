@@ -1,0 +1,202 @@
+<%-include("partials/admin-header.ejs")%>
+
+<section class="section featured-car" id="featured-car">
+    <div class="container">
+      <% if(locals.errorMessage){ %>
+        <div class="message-container-2">
+          <p><%= errorMessage %></p>
+        </div>
+      <% }else{ %>
+        <div class="title-wrapper-2 wrapper">
+          <a href="#demo-modal"><button class="btn-bk" >Add Vehicle</button></a>
+        </div>
+        <div id="demo-modal" class="modal">
+          <div class="modal__content">
+            <h1 style="color: azure;">Add Vehicle</h1>
+            <!-- Modal form -->
+            <form action="/addvehicle" method="POST" enctype="multipart/form-data" class="grid-cols-1 grid md:grid-cols-3">
+              <div class="md:col-span-3 grid-cols-1 sm:grid-cols-2 grid">
+                <div>
+                  <label class="form-label">Upload vehicle image</label>
+                  <input type="file" name="vehicleImage" placeholder="Vehicle image" class="form-input" accept="image/*" required="">
+                </div>
+                <div>
+                  <label class="form-label">Vehicle Name</label>
+                  <input type="text" name="vehicleName" placeholder="Vehicle name" class="form-input" required="">
+                </div>
+                <div>
+                  <label class="form-label">Launched Year</label>
+                  <select name="launchYear" class="form-input" required="">
+                    <% for(let i = 2024; i >= 1998; i--){ %>
+                      <option style="color: black;"><%= i %></option>
+                    <% } %>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Price per day</label>
+                  <input type="number" min="1" name="pricePerDay" placeholder="price" class="form-input" required="">
+                </div>
+                <div>
+                  <label class="form-label">Seating capacity</label>
+                  <input type="number" min="2" name="seatingCapacity" placeholder="seating" class="form-input" required="">
+                </div>
+                <div>
+                  <label class="form-label">Milage Per Litre*</label>
+                  <input type="text" name="milage"  placeholder="Milage Km" class="form-input" required="">
+                </div>
+              </div>
+              <div>
+                <label class="form-label">Select Transmition Type</label>
+                <select name="transmissionType" class="form-input" required="">
+                  <option style="color: black;">N/A</option>
+                  <option style="color: black;">Manual</option>
+                  <option style="color: black;">Automatic</option>
+                </select>
+              </div>
+              <div>
+                <label for="carType" class="form-label">Select Vehicle type</label>
+                <select name="vehicleType" id="carType" class="form-input" required="">
+                  <option style="color: black;">Vehicle type</option>
+                  <option style="color: black;">Gasoline</option>
+                  <option style="color: black;">Electric</option>
+                  <option style="color: black;">Hybrid</option>
+                </select>
+              </div>
+              <div class="md:col-span-3">
+                <button type="submit" class="btn-bk">Add</button>
+              </div>
+            </form>
+            <a href="#" class="modal__close">&times;</a>
+          </div>
+        </div>
+        <ul class="featured-car-list">
+          <% if(locals.availableVehicles && availableVehicles != -1){ %>
+            <% availableVehicles.forEach((vehicle) => { %>
+                <li>
+                  <div class="featured-car-card">
+                    <figure class="card-banner">
+                      <img src= "<%= vehicle.vehicle_image_path %>" alt="Toyota RAV4 2021" loading="lazy" width="440" height="300" class="w-100">
+                    </figure>
+                    <div class="card-content">
+                      <div class="card-title-wrapper">
+                        <h3 class="h3 card-title">
+                          <a href="#"><%= vehicle.vehicle_model %></a>
+                        </h3>
+                        <data class="year"><%= vehicle.launched_year %></data>
+                      </div>
+                      <ul class="card-list">
+                        <li class="card-list-item">
+                          <ion-icon name="people-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.seating_capacity %> People</span>
+                        </li>
+                        <li class="card-list-item">
+                          <ion-icon name="flash-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.vehicle_type %></span>
+                        </li>
+                        <li class="card-list-item">
+                          <ion-icon name="speedometer-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.milage %>km / litre</span>
+                        </li>
+                        <li class="card-list-item">
+                          <ion-icon name="hardware-chip-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.transmission_type %></span>
+                        </li>
+                      </ul>
+                      <div class="card-price-wrapper">
+                        <p class="card-price">
+                          <strong><%= vehicle.price_per_day %></strong> / day
+                        </p>     
+                        <div style="display: flex;">
+                            <div class="md:col-span-3">
+                                <a href="/removevehicle/<%= vehicle.vehicle_id %>">
+                                  <button type="submit" class="remove-btn-admin">Remove</button>
+                                </a>
+                            </div>
+                        </div>  
+                      </div>
+                    </div>
+                  </div>
+                </li>
+            <% }); %>
+          <% }else{ %>
+            <div class="message-container-2">
+              <p>You haven't added any vehicles for booking.</p>
+            </div>
+          <% } %>
+  
+        </ul>
+      </div>
+    </section>
+  
+  
+  
+  
+  
+    
+  
+  <section class="section featured-car" id="featured-car">
+     
+        <div class="container">
+          <h1 style="margin-bottom: 20px;">Removed Vehicles</h1>
+        <ul class="featured-car-list">  
+          
+          <% if(locals.unavailableVehicles && unavailableVehicles != -1){ %>
+            <% unavailableVehicles.forEach((vehicle) => { %>
+                <li>
+                  <div class="featured-car-card">
+                    <figure class="card-banner">
+                      <img src= "<%= vehicle.vehicle_image_path %>" alt="Toyota RAV4 2021" loading="lazy" width="440" height="300" class="w-100">
+                    </figure>
+                    <div class="card-content">
+                      <div class="card-title-wrapper">
+                        <h3 class="h3 card-title">
+                          <a href="#"><%= vehicle.vehicle_model %></a>
+                        </h3>
+                        <data class="year"><%= vehicle.launched_year %></data>
+                      </div>
+                      <ul class="card-list">
+                        <li class="card-list-item">
+                          <ion-icon name="people-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.seating_capacity %> People</span>
+                        </li>
+                        <li class="card-list-item">
+                          <ion-icon name="flash-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.vehicle_type %></span>
+                        </li>
+                        <li class="card-list-item">
+                          <ion-icon name="speedometer-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.milage %>km / litre</span>
+                        </li>
+                        <li class="card-list-item">
+                          <ion-icon name="hardware-chip-outline"></ion-icon>
+                          <span class="card-item-text"><%= vehicle.transmission_type %></span>
+                        </li>
+                      </ul>
+                      <div class="card-price-wrapper">
+                        <p class="card-price">
+                          <strong><%= vehicle.price_per_day %></strong> / day
+                        </p>     
+                        <div style="display: flex;">
+                            <div class="md:col-span-3">
+                                <a href="/addvehicle/<%= vehicle.vehicle_id %>">
+                                  <button type="submit" class="add-btn-admin">Add</button>
+                                </a>
+                            </div>
+                        </div>  
+                      </div>
+                    </div>
+                  </div>
+                </li>
+            <% }); %>
+          <% }else{ %>
+            <div class="message-container-2">
+              <p>No vehicles found.</p>
+            </div>
+          <% } %>
+        </ul>
+      <% } %>
+    </div>
+  </section>
+ 
+
+<%-include("partials/admin-footer.ejs")%>
